@@ -1,85 +1,45 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="min-h-screen bg-gray-100 p-4">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-3xl font-bold mb-4">🎯 今日任務</h1>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <div class="space-y-4">
+        <TaskCard
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          @complete="completeTask"
+        />
+      </div>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+      <div class="mt-6">
+        <button
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow-md"
+          @click="addSampleTask"
+        >
+          ➕ 新增任務
+        </button>
+      </div>
     </div>
-  </header>
-
-  <RouterView />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<script setup>
+import { ref } from 'vue'
+import TaskCard from './components/TaskCard.vue'
+
+const tasks = ref([
+  { id: 1, title: '完成 Vue 任務 UI', completed: false },
+  { id: 2, title: '整理 ERD 資料表結構', completed: false },
+])
+
+function completeTask(id) {
+  const task = tasks.value.find((t) => t.id === id)
+  if (task) task.completed = true
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+function addSampleTask() {
+  const id = Date.now()
+  tasks.value.push({ id, title: '新的任務項目', completed: false })
 }
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
+</script>
